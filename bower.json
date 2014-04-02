@@ -1,0 +1,17 @@
+{
+  "name": "srcds-frontend",
+  "version": "0.1.0",
+  "authors": [
+    "Gadzhi Gadzhiev <gadzhi@gadzhiev.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/resure/srcds-frontend",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "public/components",
+    "test",
+    "tests"
+  ]
+}
