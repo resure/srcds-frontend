@@ -15,16 +15,15 @@ $(document).ready(function () {
     action_button.prop('disabled', true);
 
     if (current_status == 'Running') {
-      console.log('Emitting stop');
+      action_button.text('Stop initiated');
       socket.emit('stop');
     } else {
-      console.log('Emitting start');
+      action_button.text('Start initiated');
       socket.emit('start', { map: 'cs_assault', mode: 'terrortown' });
     }
   });
 
   socket.on('statusUpdate', function (data) {
-    console.log('statusUpdate was emitted: ', data);
     current_status = data.status;
 
     status_title.text(current_status);
