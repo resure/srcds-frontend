@@ -47,7 +47,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', function (req, res) {
   res.render('index', {
-    title: 'Source Dedicated Server Control Area',
+    title: 'Source Dedicated Server',
     maps: maps,
     modes: modes
   });
@@ -83,6 +83,12 @@ function checkStatus(socket) {
     redis.get('srcds_server_status', function (err, last_result) {
 
       if (result != last_result) {
+        console.log('----------------');
+        console.log('Status changed!');
+        console.log('Old: ', last_result);
+        console.log('New: ', result);
+        console.log('----------------');
+
         result_arr = result.split(' ');
         var status;
         if (result_arr.length == 1) {
@@ -94,7 +100,8 @@ function checkStatus(socket) {
             mode:   result_arr[2]
           };
         }
-        socket.emit('statusUpdate', status);
+        console.log('Emitted statusUpdate: ', status);
+        io.sockets.emit('statusUpdate', status);
         redis.set('srcds_server_status', result);
       }
 

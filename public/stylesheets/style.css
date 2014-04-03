@@ -5,3 +5,65 @@ body {
 a {
   color: #00B7FF;
 }
+.label {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: 2px;
+  border-radius: 3px;
+}
+.clearfix:after {
+  content: ' ';
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+.srcds {
+  width: 500px;
+  margin: 7% auto auto auto;
+  text-align: center;
+  border: 1px #ccc solid;
+  border-radius: 7px;
+}
+.header {
+  font-size: 2.5em;
+  margin: 15px auto 10px auto;
+}
+.status {
+  margin: 0 0 20px 0;
+}
+.status.running > .status__title {
+  background-color: #beb;
+}
+.status.halted > .status__title {
+  background-color: #555;
+  color: #eee;
+}
+.status__title {
+  background-image: url(/images/hatch.png);
+  background-color: #e5e5e5;
+  font-size: 2em;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-right: none;
+  padding: 7px;
+}
+.status__info {
+  width: 100%;
+  padding-top: 11px;
+  padding-bottom: 11px;
+  background: #f4f4f4;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+.status__info__map {
+  float: left;
+  width: 50%;
+}
+.status__info__mode {
+  float: left;
+  width: 50%;
+}
+.status__control__button {
+  font-size: 1.5em;
+}
