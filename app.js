@@ -79,9 +79,7 @@ function runCommand(cmd, args, callback ) {
 }
 
 function checkStatus(socket) {
-
   runCommand("/bin/sh", [cmd, 'status'], function (result) {
-
     redis.get('srcds_server_status', function (err, last_result) {
 
       if (result != last_result) {
@@ -96,7 +94,6 @@ function checkStatus(socket) {
             mode:   result_arr[2]
           };
         }
-
         socket.emit('statusUpdate', status);
         redis.set('srcds_server_status', result);
       }
@@ -104,8 +101,6 @@ function checkStatus(socket) {
       setTimeout(function () {
         checkStatus(socket);
       }, 2000);
-
     });
-
   });
 }
