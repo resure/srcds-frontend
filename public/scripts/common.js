@@ -1,6 +1,7 @@
 
 $(document).ready(function () {
   var socket = io.connect('/');
+  window.socket = socket;
 
   socket.on('statusUpdate', function (data) {
     $('.status__title').text(data.status);
