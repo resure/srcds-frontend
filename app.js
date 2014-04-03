@@ -15,7 +15,7 @@ app.set('env', process.env.NODE_ENV || 'development');
 
 var cmd;
 if (app.get('env') == 'development') {
-  cmd = "test.sh"
+  cmd = "test/serverController.sh"
 } else {
   cmd = "srcds_controller/serverController.sh";
 }
@@ -92,8 +92,8 @@ function checkStatus(socket) {
         } else {
           status = {
             status: result_arr[0],
-            map: result_arr[1],
-            mode: result_arr[2]
+            map:    result_arr[1],
+            mode:   result_arr[2]
           };
         }
 
@@ -101,10 +101,11 @@ function checkStatus(socket) {
         redis.set('srcds_server_status', result);
       }
 
+      setTimeout(function () {
+        checkStatus(socket);
+      }, 2000);
+
     });
 
-    setTimeout(function () {
-      checkStatus(socket);
-    }, 2000);
   });
 }
