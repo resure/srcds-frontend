@@ -1,0 +1,3 @@
+[submodule "srcds_controller"]
+	path = srcds_controller
+	url = https://github.com/JustDolanIt/SRCDS-controller
