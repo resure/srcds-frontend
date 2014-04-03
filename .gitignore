@@ -26,3 +26,7 @@ node_modules
 
 # WebStorm
 .idea
+
+# Current server status in dev mode
+test/current_status
+
