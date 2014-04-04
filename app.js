@@ -4,6 +4,7 @@ var http = require('http');
 var path = require('path');
 var spawn = require('child_process').spawn;
 var redis = require('redis').createClient();
+var config = require('./config');
 
 redis.on('error', function (err) {
   console.log(err);
@@ -19,14 +20,6 @@ if (app.get('env') == 'development') {
 } else {
   cmd = "srcds_controller/serverController.sh";
 }
-
-var maps = [
-  'cs_assault'
-];
-
-var modes = [
-  'terrortown'
-];
 
 // all environments
 app.set('views', path.join(__dirname, 'views'));
@@ -48,19 +41,21 @@ if ('development' == app.get('env')) {
 app.get('/', function (req, res) {
   res.render('index', {
     title: 'Source Dedicated Server',
-    maps: maps,
-    modes: modes
+    maps: config.maps,
+    modes: config.modes
   });
 });
 
 var io = require('socket.io').listen(app.listen(port));
 
-io.sockets.on('connection', function (socket) {
+redis.on('ready', function () {
   redis.set('srcds_server_status', 'Pending');
-  checkStatus(socket);
+  checkStatus(io);
+});
 
+io.sockets.on('connection', function (socket) {
   socket.on('start', function (data) {
-    if (maps.indexOf(data.map) > -1 && modes.indexOf(data.mode) > -1) {
+    if (config.maps.indexOf(data.map) > -1 && config.modes.indexOf(data.mode) > -1) {
       runCommand('/bin/sh', [cmd, 'start', data.map, data.mode], function () {});
     }
   });
@@ -68,6 +63,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('stop', function () {
     runCommand('/bin/sh', [cmd, 'stop'], function () {});
   });
+
+  redis.get('srcds_server_status', function (err, result) {
+    console.log('statusUpdate emitted: ' + result);
+    io.sockets.emit('statusUpdate', parseStatus(result));
+  })
 });
 
 function runCommand(cmd, args, callback ) {
@@ -78,29 +78,37 @@ function runCommand(cmd, args, callback ) {
   child.stdout.on('end', function () { callback(resp) });
 }
 
-function checkStatus(socket) {
+function checkStatus(io) {
   runCommand("/bin/sh", [cmd, 'status'], function (result) {
     redis.get('srcds_server_status', function (err, last_result) {
 
       if (result != last_result) {
-        result_arr = result.split(' ');
-        var status;
-        if (result_arr.length == 1) {
-          status = { status: result_arr[0] };
-        } else {
-          status = {
-            status: result_arr[0],
-            map:    result_arr[1],
-            mode:   result_arr[2]
-          };
-        }
+        var status = parseStatus(result);
         io.sockets.emit('statusUpdate', status);
         redis.set('srcds_server_status', result);
       }
 
       setTimeout(function () {
-        checkStatus(socket);
+        checkStatus(io);
       }, 2000);
     });
   });
 }
+
+function parseStatus(status) {
+  var result,
+      input = status.split(' ');
+
+  if (input.length == 1) {
+    result = { status: input[0] };
+  } else {
+    result = {
+      status: input[0],
+      map:    input[1],
+      mode:   input[2]
+    };
+  }
+
+  return result;
+}
+
