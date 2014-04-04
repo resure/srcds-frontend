@@ -30,3 +30,6 @@ node_modules
 # Current server status in dev mode
 test/current_status
 
+# Configuration file
+config.js
+
